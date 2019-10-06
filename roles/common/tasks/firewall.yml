@@ -1,0 +1,20 @@
+- name: SELinux操作に必要なパッケージをインストール
+  yum:
+    name: libselinux-python
+    state: present
+  tags:
+    - firewall
+
+- name: SELinux無効化
+  selinux:
+    state: disabled
+  tags:
+    - firewall
+
+- name: firewall無効化
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  tags:
+    - firewall

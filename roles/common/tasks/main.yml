@@ -1,0 +1,8 @@
+- include: yum.yml
+
+- include: firewall.yml
+  when: inventory_hostname != 'local'
+
+- include: japanese.yml
+
+- include: volume.yml

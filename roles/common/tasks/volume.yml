@@ -1,0 +1,13 @@
+- name: "growpart"
+  shell: growpart /dev/sda 3
+  register: result
+  ignore_errors: True
+  changed_when: False
+  tags:
+    - volume
+
+- name: "ルートボリュームの拡張"
+  shell: xfs_growfs -d /
+  when: result|success
+  tags:
+    - volume

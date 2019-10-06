@@ -1,0 +1,5 @@
+- hosts: web-servers
+  become: yes
+  roles:
+    - common
+    - docker

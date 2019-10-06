@@ -1,0 +1,54 @@
+- name: yum-utilsをインストールします
+  yum:
+    name: yum-utils
+    state: installed
+  tags:
+    - docker
+
+- name: リポジトリの追加
+  template:
+    src: "docker-ce.repo.j2"
+    dest: /etc/yum.repos.d/docker-ce.repo
+    owner: root
+    mode: 0644
+  tags:
+    - docker
+
+- name: dockerをインストールします
+  yum:
+    name: docker-ce
+    state: installed
+  tags:
+    - docker
+
+- name: dockerのグループ確認
+  shell: "cat /etc/group | grep docker:"
+  register: docker_res
+  changed_when: false
+  tags:
+    - docker
+
+- name: workユーザをdockerグループに登録
+  user:
+    name: work
+    groups: docker
+    append: yes
+  when: "'work' not in '{{ docker_res.stdout }}'"
+  tags:
+    - docker
+
+- name: dockerスタート
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  tags:
+    - docker
+
+- name: docker-composeダウンロード
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{docker_compose_version}}/docker-compose-{{ansible_system}}-{{ansible_machine}}"
+    dest: "/usr/local/bin/docker-compose"
+    mode: 755
+  tags:
+    - docker

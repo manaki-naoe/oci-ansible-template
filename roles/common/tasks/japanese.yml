@@ -1,0 +1,27 @@
+- name: ロケールの確認
+  shell: localectl status | grep "ja_JP.utf8"
+  register: result
+  failed_when: False
+  changed_when: False
+  tags:
+    - japanese
+
+- name: ロケールを日本に設定
+  command: localectl set-locale LANG=ja_JP.utf8
+  when: result.rc == 1
+  tags:
+    - japanese
+
+- name: timezoneの確認
+  shell: timedatectl status | grep "Asia/Tokyo"
+  register: result
+  failed_when: False
+  changed_when: False
+  tags:
+    - japanese
+
+- name: timezoneを東京に設定
+  command: timedatectl set-timezone Asia/Tokyo
+  when: result.rc == 1
+  tags:
+    - japanese
